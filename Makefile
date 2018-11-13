@@ -7,8 +7,8 @@ setup:
 	@pip install -r requirements.txt
 
 start:
-	@python -m water.server
+	@python -m wormhole.server
 
 run:
-	@docker build . -t water-app
-	@docker run water-app
+	@docker build . -t wormhole-app
+	@docker run wormhole-app
