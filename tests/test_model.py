@@ -46,6 +46,22 @@ class ModelTestCase(AsyncTestCase):
         self.assertEqual(_id, model.data['_id'])
 
     @gen_test
+    async def test_insert(self):
+        model = Model(self.database, self.collection)
+        await model.insert()
+        data = self.client.find_one({'_id': model.data['_id']})
+        self.assertEqual(data, model.data)
+
+    @gen_test
+    async def test_update(self):
+        _id = self.client.insert_one({}).inserted_id
+        model = Model(self.database, self.collection, data={'_id': _id})
+        expected = model.data.copy()
+        expected['name'] = 'batman'
+        await model.update({'name': 'batman'})
+        self.assertEqual(expected, self.client.find_one({'_id': _id}))
+
+    @gen_test
     async def test_delete(self):
         _id = self.client.insert_one({}).inserted_id
         model = Model(self.database, self.collection, data={'_id': _id})

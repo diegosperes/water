@@ -16,6 +16,7 @@ class Model:
     @property
     def data(self):
         now = datetime.datetime.now()
+        now = now.replace(microsecond=0) #mongodb does not support microsecond
         self._data.setdefault('created', now)
         self._data.setdefault('updated', now)
         return self._data
@@ -27,3 +28,12 @@ class Model:
 
     async def delete(self):
         await self.client.delete(self.database, self.collection, {'_id': self.data['_id']})
+
+    async def insert(self):
+        await self.client.insert(self.database, self.collection, self.data)
+
+    async def update(self, data):
+        self.data.update(data)
+        query = {'_id': self.data['_id']}
+        data = {'$set': self.data}
+        await self.client.update(self.database, self.collection, query, data)

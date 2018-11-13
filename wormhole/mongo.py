@@ -30,6 +30,16 @@ class Mongo:
             return collection.delete_one(*args, **kwargs)
         return await self._run(database, collection, _delete, *args, **kwargs)
 
+    async def insert(self, database, collection, *args, **kwargs):
+        def _insert(collection, *args, **kwargs):
+            return collection.insert_one(*args, **kwargs)
+        return await self._run(database, collection, _insert, *args, **kwargs)
+
+    async def update(self, database, collection, *args, **kwargs):
+        def _update(collection, *args, **kwargs):
+            return collection.update_one(*args, **kwargs)
+        return await self._run(database, collection, _update, *args, **kwargs)
+
     async def _run(self, database, collection, action, *args, **kwargs):
         collection = await get_collection(self._executor, self._client, database, collection)
         return await run(self._executor, action, collection, *args, **kwargs)
