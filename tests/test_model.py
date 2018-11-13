@@ -47,10 +47,9 @@ class ModelTestCase(AsyncTestCase):
 
     @gen_test
     async def test_insert(self):
-        model = Model(self.database, self.collection)
-        await model.insert()
-        data = self.client.find_one({'_id': model.data['_id']})
-        self.assertEqual(data, model.data)
+        await self.model.insert()
+        data = self.client.find_one({'_id': self.model.data['_id']})
+        self.assertEqual(data, self.model.data)
 
     @gen_test
     async def test_update(self):
