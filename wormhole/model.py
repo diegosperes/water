@@ -1,4 +1,5 @@
 import datetime
+from bson.objectid import ObjectId
 
 from wormhole.mongo import Mongo
 
@@ -9,6 +10,7 @@ class Model:
 
     @classmethod
     async def find(cls, database, collection, _id):
+        _id = ObjectId(_id)
         data = await cls.client.find(database, collection, {'_id': _id})
         if data:
             return cls(database, collection, data=data)
