@@ -39,6 +39,14 @@ class ModelTestCase(AsyncTestCase):
         model = Model(self.database, self.collection, data={'updated': updated})
         self.assertEqual(updated, model.data['updated'])
 
+    def test_view(self):
+        expected = {
+            'id': str(self.model.data['_id']),
+            'created': self.model.data['created'],
+            'updated': self.model.data['updated']
+        }
+        self.assertEqual(expected, self.model.view)
+
     @gen_test
     async def test_find(self):
         _id = self.client.insert_one({}).inserted_id

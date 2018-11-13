@@ -24,6 +24,13 @@ class Model:
         self._data.setdefault('updated', now)
         return self._data
 
+    @property
+    def view(self):
+        view = self.data.copy()
+        view['id'] = str(self.data['_id'])
+        del view['_id']
+        return view
+
     def __init__(self, database, collection, data={}):
         self.database = database
         self.collection = collection
