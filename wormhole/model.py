@@ -14,9 +14,12 @@ class Model:
             return cls(database, collection, data=data)
 
     @property
+    def query(self):
+        return {'_id': self.data['_id']}
+
+    @property
     def data(self):
-        now = datetime.datetime.now()
-        now = now.replace(microsecond=0) #mongodb does not support microsecond
+        now = datetime.datetime.now().replace(microsecond=0) #mongodb does not support microsecond
         self._data.setdefault('created', now)
         self._data.setdefault('updated', now)
         return self._data
@@ -27,13 +30,12 @@ class Model:
         self._data = data
 
     async def delete(self):
-        await self.client.delete(self.database, self.collection, {'_id': self.data['_id']})
+        await self.client.delete(self.database, self.collection, self.query)
 
     async def insert(self):
         await self.client.insert(self.database, self.collection, self.data)
 
     async def update(self, data):
         self.data.update(data)
-        query = {'_id': self.data['_id']}
         data = {'$set': self.data}
-        await self.client.update(self.database, self.collection, query, data)
+        await self.client.update(self.database, self.collection, self.query, data)
