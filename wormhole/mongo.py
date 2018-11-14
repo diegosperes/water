@@ -9,7 +9,8 @@ client = MongoClient()
 
 async def run(action, *args, **kwargs):
     loop = IOLoop.current()
-    return await loop.run_in_executor(executor, action, *args, **kwargs)
+    args = list(args) + [kwargs] if kwargs else args
+    return await loop.run_in_executor(executor, action, *args)
 
 
 class Mongo:
@@ -18,5 +19,5 @@ class Mongo:
             return client[database][collection]
         async def execute(database, collection, *args, **kwargs):
             _collection = await run(get_collection, database, collection)
-            return await run(getattr(_collection, action), *args, **kwargs)
+            return await run(lambda: getattr(_collection, action)(*args, **kwargs))
         return execute
