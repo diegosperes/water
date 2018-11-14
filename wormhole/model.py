@@ -11,7 +11,7 @@ class Model:
     @classmethod
     async def find(cls, database, collection, _id):
         _id = ObjectId(_id)
-        data = await cls.client.find(database, collection, {'_id': _id})
+        data = await cls.client.find_one(database, collection, {'_id': _id})
         if data:
             return cls(database, collection, data=data)
 
@@ -39,12 +39,12 @@ class Model:
         self._data = data
 
     async def delete(self):
-        await self.client.delete(self.database, self.collection, self.query)
+        await self.client.delete_one(self.database, self.collection, self.query)
 
     async def insert(self):
-        await self.client.insert(self.database, self.collection, self.data)
+        await self.client.insert_one(self.database, self.collection, self.data)
 
     async def update(self, data):
         self.data.update(data)
         data = {'$set': self.data}
-        await self.client.update(self.database, self.collection, self.query, data)
+        await self.client.update_one(self.database, self.collection, self.query, data)
